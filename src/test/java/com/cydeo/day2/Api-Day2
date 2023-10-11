@@ -1,0 +1,110 @@
+SOME POSTMAN FEATURES
+
+We have created global variables to save our baseUrl which is our IPaddress+ port number for spartan so that we can reuse the variable for other requests. in order to call variable in the url inputbox we type {{ and start to type variable name, it will show up and we can pick.
+How to create global variables 
+https://www.screencast.com/t/EgYUlUW0
+
+How to edit global variables:
+https://www.screencast.com/t/sMrxjHlgQJv
+
+We also saved our request in collection, we click save button then create collection for the first time and saved it. once you have one collection created you can use for saving multiple requstets. 
+How to save request:
+https://www.screencast.com/t/iOiqTPFnO
+
+HEADERS
+Additional information about request and response
+Like a map, key value format
+
+	What we send with headers(request header) ?
+		-Data types(application/json,application/xml,..)
+		-Credentaisl(username,password,token,key...)
+Request  Header
+	Accept, application/json --> hey api, please send me json respond.
+	Accept, application/xml --> please send me xml response
+	Credentials we will also send, will do it later 
+Response Headers
+	Content-type,applicaiton/json --> hey client, I am sending you json response body
+				,application/xml --> hey client, I am sending you xml response body
+
+PARAMETERS
+Parameters are options you can pass with the endpoint to influence the
+response
+2 Types of Parameters
+	 Path Parameters
+	 Query Parameters
+	 
+
+1.Path parameters
+It is a part of the url and followed by endpoint
+
+	baseurl/api/spartans{id}
+	{id}-->path parameter
+
+	if you add :id to your url in postman it will create path variables part under params tab
+	you can change the id value frpm there too without changing your url
+
+2.Query parameters
+it is NOT part of the url andd passed in key=value format
+{{baseurl}}/api/spartans/search?nameContains=j&gender=Female
+	?--> means end of the url
+	&--> add another query parameters,separate query parameters
+
+https://www.amazon.com/s?k=selenium&ref=nb_sb_noss
+
+
+BREAK UNTIL 2:15 Long break
+
+hrAPi stucutre
+
+http://yourIp:1000/ords/hr/regions
+
+http://yourIp:1000/ords/hr --> base url 
+
+What are the parts of GET REQUEST AND RESPONSE 
+GET REQUEST
+	-BaseURL + endPoints(api methods)
+	-Parameters
+		1.Path parameter {id} -->part of the ur l
+		2.Query Parameter (key and value) --> it is NOT part of the url,we separete with ? 
+	-headers
+		Accept,application/json --hey api, please send me json
+		Accept,application/xml -- hey api, please send me xml
+		credentials(username,password,token,key ..) (we will learn later)
+
+GET RESPONSE
+	-status code
+		2xx->successful
+		4xx->client error
+		5xx-->server error
+	-body
+		-json
+		-xml
+		-text
+		-html
+		-...
+	-headers
+		-Content-Type, application/json, xml --> hey client, I send you json, xml response
+==================================
+We use Postman for manually testing, where we verify status code, header, and data inside the body.
+
+we started to use RestAssured library to automate api tests. So far we have learned how to get status code, headers information and do assertion with Junit5 Assertions class. we also verify if json body contains something but we haven't learned yet how to navigate inside the json body
+
+
+if you wanna learn, please join Tuesday class.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

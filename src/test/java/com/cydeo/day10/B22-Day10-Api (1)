@@ -1,0 +1,245 @@
+how to read xml with restassured
+soap api request response
+	-example
+https -invalid certificate connections
+json schema validation
+interview speech, status codes, how to get them (4xx)
+
+====================================
+Can you do assertion if you are getting xml response in restassured ? 
+You have talked about verifiying JSON, can do you verification with xml payload ? 
+
+Yes, just like jsonPath we have xmlPath class from response object in restassured.
+so I know how to retrieve value from xml response with xml path I can get any tag value or attribute value and do assertion. 
+
+//getting xml response and assign to xmlPath 
+        XmlPath xmlPath = response.xmlPath();
+
+        String givenName = xmlPath.getString("MRData.DriverTable.Driver.GivenName");
+
+        String driverId = xmlPath.getString("MRData.DriverTable.Driver.@driverId");
+
+we navigate between parent child with using . and if there is multiple elements we can use index.
+
+in order to get attribute we use @ sign. 
+
+https://ergast.com/mrd/methods/drivers/
+https://xmlviewer.org/
+
+
+==========================================
+
+SOAP(Simple Object Access Protocol)
+
+- It has strict rule on how to send request and response.
+- Soap Request use XML format to send and receive respones 
+- ONLY method allowed in SOAP is POST 
+- The content type is always XML 
+- Body is enclosed in envelop like structure example;
+
+ONE SOAP REQUEST 
+
+-URL: https://www.dataaccess.com/webservicesserver/NumberConversion.wso
+
+-Request Header: Content-Type  text/xml;charset=utf-8
+
+-Request Body: 
+
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <NumberToWords xmlns="http://www.dataaccess.com/webservicesserver/">
+      <ubiNum>500</ubiNum>
+    </NumberToWords>
+  </soap:Body>
+</soap:Envelope>
+==========================================
+Json Schema Validation
+
+Json Schema is description about Json Data.
+
+{
+"id": 10,
+"name": "Lorenza",
+"gender": "Female",
+"phone": 3312820936
+}
+
+id--> required, integer , ip to 6 digits
+name --> required, string, up to 30char
+gender --> optional ,Male or Female
+phone --> optional long, default 0 
+
+
+
+to create json schema in case you need it --> https://www.jsonschema.net/home
+
+to manually test json schema --> https://www.jsonschemavalidator.net/
+
+STEPS for VALIDATION 
+1.You will get JSON schema for each endpoint you have that is returning JSON BODY/Payload
+2.Save those .json files under resources folder 
+3.Add Json schema validator depedenceny to your pom.xml 
+	   <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>4.4.0</version>
+        </dependency>
+4.Then perform required api request to test specific schema example:
+	you are getting one spartan, you will test with singleSpartanSchema.json file 
+
+.then()
+        .statusCode(200)
+        .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("SingleSpartanSchema.json"));
+
+JsonSchemaValidator --> class that we use for schema validation 
+
+if the file under resources we use matchesJsonSchemaInClasspath("filename") method.
+file name will be enough.
+
+if the file is not under resouserces then we use matchesJsonSchema(new File("file path under project(starts with src/")) to provide file to JsonSchemaValidator class.
+=============================================================
+HTTP vs HTTPS
+HTTPS--> secure connection,secure HTTP
+Anytime you visit a website which is https, secured an ecnrypted connection will be setup between you and the server.
+it means when you type card nummbers, data cannot be stolen on the way.
+sometimes api also require certificates.
+
+given().relaxedHTTPSValidation() --> is to trust the api without providing certificate
+given().keyStore("pathtofile","password")
+            .when().get("apiurl")
+
+for postman --> preferences --> certificate tab 
+
+=============================================================
+How to verify response time with Restassured library ? 
+
+once we sent the request after then(). method there is time(Matchers) method which takes the response time and based on the matcher we provide it will do assertion.
+we can use greaterThan(), lessThan(), or both at the same time.
+	  given()
+      .auth().basic("admin", "admin")
+                .accept(ContentType.JSON)
+                .when()
+                .get("/api/spartans")
+                .then()
+                .time(both(greaterThan(500L)).and(lessThanOrEqualTo(1100L)))
+                .extract().response();
+============================================================
+-Postman Automation (2 days)
+-JUnit 5 features --> DDT,Some Junit 5 feautres for assertion etc. 2 days 
+-Request Specification
+-Serenity 1 day
+
+--2 Days of Appium class(Mobile testing) after api with Vasyl
+
+--Karate will be after gradution 
+=============================================================
+HTTP REQUEST TYPES
+GET
+POST
+PUT
+PATCH
+DELETE
+
+GET
+REQUEST
+	-url+enpoint
+	-parameters
+		-QueryParameter
+		-PathParameter
+    -headers
+    	-Accept,application/json,xml,etc..
+    	-Authorization , credentials,username,password,accesToken
+RESPONSE
+	-status code
+		-2xx
+		-4xx
+		-5xx
+	-headers
+		-Content-type
+		-other headers(Date) etc.
+	-body
+		-json
+		-xml
+		-text
+		-...
+HTTP STATUS CODES
+2xx --Successful
+	200 OK --> most common success status code, GET is returning, other we might get it to
+	201 CREATED --> we will be getting it for POST request almost always
+	204 No Content --> successful but no respond body(json,xml) only headers and status code.
+					-->PUT,PATCH,DELETE
+4xx --> Client Error
+	400 Bad Request -->Sending bad data to server
+					--example, when we post something to spartan, if we dont have proper json body, it will return 400
+	401 Unauthorized --> no credentials, api does not know who we are.no token etc.
+					--example,try to get spartan :7000 without providing username and password
+	403 Forbidden --> we have credentials but dont have right/permission to do action
+	404 Not Found --> the resource you are looking for does not exist
+	405 Method Not Allowed --> cannot perform this http method on the endpoint
+				     --example: /api/spartans/10 is valid for GET but if you use POST it will give you 405. basically endpoint is valid , only does not support the method you used.
+    406 Not Acceptable --> Endpoint only support gettin the responce in certain format and we asked for a format that not acceptable.Example:
+    	we can get All spartans as an xml result but for indiviual spartan like /api/spartans/10 with header accept, application/xml will return 406.
+    415 Unsupported media type --> server is expecting to get the body in certain content type, but the client sent unsupported content type.
+    	examlpe: if we use content-type application/xml to POST something to spartans, it will complain with 415
+5xx --> Server error
+	500 Internal Server Error --> the server encountered and unexpected condition that prevented it from fulfiling th request.
+	Example: B22 is sending request. Or asking application/json/xml to ords api as a Accept
+	503 Service Unavailable --> the server is currently unable to handle the reuqest due to a temporary overload or scheduled maintenance. 
+
+
+How do you test rest api?
+ I verify if each REST API endpoint is working as expected.
+I send GET, POST,PUT,PATCH,DELETE type of requests and verify response status code and response body, headers. 
+
+I also do positive and negative testing of API.
+ When I do positive testing, I send valid request parameters , valid headers, valid request json body and verify that response status code is 200 successful and Json response body data is also matching the expected.
+
+ When I do negative testing, I send invalid request parameters , or invalid headers, or invalid request json body and verify that response status code is NOT 200 and Json response body contains error message.
+------------------------
+
+I also do JSON Schema validation with comparing result against the schema. I verify requirements for each fields like, what could be the values, min,maxlengh
+boundries. I can automate all of those process including json schema validation
+
+Mostly I use postman as a manual api testing tool but I can use it for automation too. I have java maven project where I use RestAssured library and Jackson databinding for automating rest api. I have pojo classes for request and response Json body, I implement serialization and deserialization with the help of Jackson library.
+
+ How does API Authentication work in your application ? 
+I send a get request to special api endpoint with providing valid credentials (username,password or email,password), then it returns  AccessToken. I use that token in my request header and access other api endpoints. I always send accesstoken with all of my requests through headers.
+
+======================== 
+DOCUMENTATION OF API: SWAGGER
+IMANUAL TESTING OF API: POSTMAN ,SOAP UI
+ AUTOMATED TESTING OF API: REST-ASSURED LIBRARY IN JAVA
+
+
+
+https://documenter.getpostman.com/view/8854915/Szf26WHn?version=latest&_ga=2.111743761.265151840.1599750425-735093615.1589812348
+
+
+
+https://jsonschema.net/app/schemas/0
+https://www.jsonschemavalidator.net/  ===> to manual testing json scheme
+
+
+
+- the real file is not generated you need to get it to developer
+
+for day11 ====>>>JUnit5
+
+-https://junit.org/junit5/docs/current/user-guide/#overview
+
+https://api.zippopotam.us/us/:zipcode
+
+
+
+--Day12 --
+
+for generate damy data
+
+https://mockaroo.com/
+
+
+
+
+
+

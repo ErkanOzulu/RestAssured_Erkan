@@ -1,0 +1,231 @@
+API Classes
+Having 2 different intellij project
+1 from github, always get the updates
+1 for yourself you type, get error, try to fix it.
+
+API classes 3 main parts
+1- 8-9 days (basics) completed everthing for interview get the job
+2- 2-3 days advance part(you might if you find api job) Junit5 
+3- extra Postman Automation classes(1-2 Days)(will be teach by sth else who is implementing right now)
+
+
+
+AMAZON UI 
+Input box='Selenium'
+
+{"productName":"Selenium"}
+
+
+AMAZON BACKEND SEARCH API
+String productNameFromUi = 'Selenium'
+
+--logic 
+
+Query = Select productName,productPrice
+where productName = productNameFromUi;
+
+Return 
+["product":['Selenium pills',]]
+
+
+AMAZON DB
+Run query agaisnt to database
+
+
+===========================================
+API
+we have 2 main usages of API.
+1.Sharing information between different applications
+for example websites like skyscanner has access to different airlines api.
+when we fill out the information like departure,from, dates it takes those info
+and send as a request to different airlines APIs, this comminucation most of the time happens in JSON format. JSON is data storage structure in key and value format. 
+
+Once skyscanner sends requrest, if they have right to ask those information and if they ask in proper format, they will get RESPONSE most in the same format they asked which is JSON 
+they will see avaialable flights prices and dates, and they will only display those results in their website. 
+
+Another example could be logining using gmail,hotmail,apple id etc in different websites like airbnb. they asked is this valid user, can I acccess some information like firstname,lastname,birthday etc, and if we give permission google lets say share those infor with airbnb so that we dont need to register seperately airbnb.
+
+this was examples for the first usage of api.
+
+Second usage of API is using api for building bacnkend in single project. in this usage the main motivation is not sharing information with third party appilication ,
+it is creating better backend structure to safer,faster, and allowing multi platform development easier.
+For example, amazon has search functionalliy where we provide one product name and it takes that info look into to databaes
+and bring the result. there are many different ways to build backend which dont care as a tester,
+ but using restapi or microserveices one of the ways of buliding it. If developers uses apis basically they build one structore on top of database and
+ we can comminucate with that api through differen tools like postman.
+  communication again will happend with json or xml and it will be only data transfer. so how this is helping the company ?
+
+After they build backend, they can easly map those json information to different appication of their product.
+like they can easliy build mobile application, and create connection with search api, it will be only basic data tranfer between their mobile app and search api.
+
+these benefits motivate companies to build backend using api, so they hire more testers.
+
+if you need api tester, we are here at Cybertek. 
+===============================
+First API we will test is Spartan api which runs yourIpaddress:8000 
+
+POSTMAN
+Start sth new
+-Create new 
+-HTTP request
+
+if you are getting permission error, close the postman, go to postman icon on desktop, right click,
+"Run as Administrator"
+
+================
+So we sent our first request to our ipaddress:8000/api/spartans endpoint which we learned from documentation, it displays all spartans
+
+in postman we pick GET request fill out the URL part and add the endpoint.
+
+As a RESPONSE we got 3 MAIN parts
+-STATUS CODE
+-HEADER
+-BODY
+
+How do I understand from status code my request is succesful ?
+we have 3 main type of status codes
+
+2xx-> successful API request, there are different 200 types like 201,204 we will learn later
+4xx-> which means client error, most of the we did some mistake, or we asked sth that we dont have right to ask
+5xx--> if we 500, it is server/api mistake almost always. the server might me down or could not handle that much request. 
+
+
+REQUEST
+	-url+endponts
+	-header
+	-body
+	-parameters
+
+RESPONSE
+	-statuscode
+	-body
+	-header
+
+
+GIVEN spartanBaseurl +/api/spartans endpoint
+WHEN I send a GET request
+THEN status code must be 200
+AND body needs to include spartan information
+
+Spartan Crud Operation--Crud--Create, Read, Update, Delete
+==============================================
+Creating maven project for API automation 
+1.File->new->Project
+2.Please put B22-RestAssured-yourname as a project name, do your practice in the project.
+GroupId= com.cybertek
+3.Finish
+==============================================
+JSON
+What is JSON? 
+JavaScript Object Notation
+
+Key value pair to represent data
+Key will be always String
+
+Values can be:
+	String
+	Number
+	boolean
+	null
+	array
+	json Object
+
+Person: firstName,lastName,age
+
+{
+	"firstName":"Ihsan",
+	"lastName":"Gozel",
+	"Age": 22,
+	"isMarried":false,
+	"job":null,
+	"hobbies":["traveling","reading","swimming"],
+	"address":{ 
+				"street":"jones branch",
+				"zipcode":20007,
+				"state":"VA"
+				"phone":{
+						"mobile":123123123,
+						"work":4123123123
+                           }
+               }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

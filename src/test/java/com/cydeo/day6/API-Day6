@@ -1,0 +1,216 @@
+Response Validations
+
+    so far, we send all request and stored responses into Response object, then did validations(status code,header,body)
+    we can also do all of those actions in single statement by Hamcrest Mathers.
+
+    if we are getting one value we can use is() or equalTo("expectedValue") method.
+    for working with multiple values we have hasItems("value1","value2",.."valueN") method
+
+
+VERIFY RESPONSE BODY/PAYLOAD
+
+1.using contains method(not recommended)
+    --treat the response json as a String and do contains assertion on it. 
+        response.body().asString().contains("ExpectedValue");
+
+2.using path() method
+    Extract values from json body using path() method, then use JUnit5 for assertion
+        String city = response.path("items.city[0]");
+        assertEquals(city,"New York");
+3.using JsonPath class
+    Convert Response data into JsonPath then use jsonpath getter methods to extract values.
+    Used Junit5 for assertion.
+        JsonPath jsonPath = response.jsonPath();
+        assertEquals(json.getString("gender"),"Male")
+4.Hamcrest Mathcers with chaining restassured methods.
+    we can do assertions in single statement by chaining method in RestAssured.
+    to find values in the body, we us the same path syntax(Gpath syntax).
+    then we use hamcrest matchers assertions to do validation
+         .and().body("id",equalTo(15),
+                     "name",is("Meta"),
+                     "gender",is("Female"),
+                     "phone",is(1938695106));
+
+5.Converting JSON Response to Java Collection/Data structure
+
+Response body --> Java collection
+{
+    "id": 15,
+    "name": "Meta",
+    "gender": "Female",
+    "phone": 1938695106
+}
+
+
+Map<String,Object> jsonDataMap = response.body().as(Map.class);
+
+Deserializaiton ==> JSON To JAVA 
+
+    Jackson or Gson ==> those are libraries to deserialization and serialization. they are also known as objectMapper,jsonparser, databinding libraries.we added jackson (Databind) library to our pom.xml to deserialize 
+
+6.Converting JSON to Custom Java Classes
+POJO(Plain old java object)
+
+{
+    "schoolName":"Cybertek",
+    "city":"McLean",
+    "state":"VA"
+}
+
+public class School{
+    
+    private String schoolName;
+    private String city;
+    private String state;
+
+    //getter setters
+
+    //constructor 
+
+    //toString
+}
+
+School school1 = response.as(School.class);
+
+So we have converted our json response to pojo class which is our custom class that we created for Spartan. this is also called deserialization because we convert JSON to JAVA aan the end.
+we have learnt 2 different way to get this convertion 
+
+1.response.as(Classname.class) method where we give the custom class as a convertion type
+       
+        Spartan spartan15 = response.as(Spartan.class);
+this method will work if we have Jackson(Databind) or Gson libraries in our pom.xml because they are the one who does deserialization. when we look definition of the as() method it says if you add one of those, I will do converstion for you. 
+
+second way is using JsonPath object getter like getObject.
+
+        Spartan s15 = jsonPath.getObject("", Spartan.class);
+
+It also uses Jackson or Gson, but the benefits of using this method, while we do deserialization we can also give path.
+
+Scenario: when we use /api/spartan/search endpoint we got result in following format.
+
+so we have one json object, consist of 2 keys, content and totalElement
+content is keeping multiple spartan json objects.
+{ content:[{},{}],
+  totalElement:3
+}
+
+so the question is how can we save first spartan jsonObject inside the content array ? 
+
+to get this one in one shot, we need to point first element of content and also do deserialization to Spartan class. so what we used is jsonPath.getObject method where we have option to provide path and classType at the same time. 
+
+ //get the first spartan from content list and put inside spartan object
+        Spartan s1 = jsonPath.getObject("content[0]", Spartan.class);
+
+as you see above, we pointed the first element and we tell we want to convert it to  spartan class.
+response.as() method does NOT have option to use path and class time at the same time, that is the reasoin JsonPath sometimes could be more useful. 
+
+Jackson annotations
+@JsonProperty("region_id")
+    private int regionId;   
+
+
+ //if your jsonkey and variable name not matching, you can map it with jsonProperty
+ lets say you have region_id in the json response but you want to change your variable name to
+ rId. how can you tell jackson to get region_id value and put inside the rId variable ? 
+
+ so we use @JsonProperty annotation that comes from jackson, we provide the jsonkey that we want
+ to map, and we put on top of the field that we create connection
+    @JsonProperty("region_id")
+    private int rId;
+
+Scenario: you have json which has many keys and values, but you just need only 4 value to do verification, how can you only get 4 values as a POJO class and ignore the rest ? 
+
+When we create a pojo with only 4 values and try to do deserialize we got following exception
+
+com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field "employee_id" 
+
+this is because we dont have employee_id field in our pojo class. So how can we tell jackson
+ignore all the jsonKeys that we dont have corresponding value in our pojo class ?
+
+Solution:
+@JsonIgnoreProperties(ignoreUnknown = true)
+
+we put this annotations which comes from jackson library on top of the pojo class we want to ignore fields. default value for ignoreUnknown is false so make sure you set it to true.
+
+
+HTTP REQUEST TYPES
+GET
+POST
+PUT
+DELETE
+PATCH
+
+POST METHOD 
+we use it to create something, we learn how to use it based on api, from documentation
+documentation can be swagger or sth else.
+
+PART OF POST REQUEST
+    -BaseURL+endpoint
+    -Request JSON BODY
+        {
+             "gender": "Male",
+             "name": "HaroldFinch",
+             "phone": 3276421786
+        }
+    -headers
+            -Accept, application/json --> hey api, I want JSON respone from you.
+            -Content-type,application/json --> hey api, I am SENDING YOU JSON request body.
+            -Auth(if we any)
+    -Query or path parameter still possible but we dont have in spartan example.
+
+PART OF POST RESPONSE
+    -Status Code --> almost always it will be 201 for post request.
+    -headers --> custom header to verify or Content type (similar get)
+    -body 
+        -some succesful message to show we post correctly
+        -same data that we send most of the time
+
+
+PUT request
+we use put request to update existing record, for spartan we had following request and response sturcture
+
+PART OF PUT REQUEST
+    -BaseURL+endpoint
+    -Path param id --> to tell which spartan we will update 
+    -Request JSON BODY --> we provide 3 of the keys even if we only update one of them
+        {
+             "gender": "Male",
+             "name": "HaroldFinch",
+             "phone": 3276421786
+        }
+    -headers
+            -Accept, application/json --> hey api, I want JSON respone from you.
+            -Content-type,application/json --> hey api, I am SENDING YOU JSON request body.
+            -Auth(if we any)
+    
+
+PART OF POST RESPONSE
+    -Status Code --> 204 NO content --> for spartan we got this, it means no body only status code and headers 
+    -headers --> custom header  no content type header, bc no body returned 
+    
+
+PUT VS PATCH
+they both update the result basically existing information
+the only difference between them is while we updateing even one value from json
+we need to provide rest of the fields with PUT request. but when we use PATH request we do NOT need to provide the fields that we will NOT update it. basically we can only put fields that we want to change and send patch request. for spartan both of them is returning 204 which means succesfull and no body in return.
+
+
+DELETE 
+for spartan we just provide path parameter and switch our request to type DELETE
+it returns 204 no content as a status code.
+we can only delete one spartan one time :) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

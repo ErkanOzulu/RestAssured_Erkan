@@ -1,0 +1,65 @@
+Swagger 
+Swagger documentations has options which is called "Try it out", allow us to send request from browser. it generates the respond and also something called 'cURL'
+curl is command line too l that we can communicate apis. it supports smany diffrent protocols. 
+we can copy the curl code, import in the postman and get our request ready to use it. 
+
+HOW TO TEST POST REQUEST WITH RESTASSURED LIBRARY ? 
+
+We will use 3 different ways to send jsonBody with post request.
+1.Sending JSON as a String 
+    String requestJsonBody = "{\"gender\":\"Male\",\n" +
+                "\"name\":\"Severus\",\n" +
+                "\"phone\":8877445596}";
+
+We created json structure manually(or copy from postman,swagger) and saved in one String variable in java. and use .body(variableName) method to send with request part.
+
+
+RESPONSE BODY
+deserialization --> JSON --> JAVA (MAP,LIST,POJO) (we use for converting json java mostly GET request)
+JAVA -- JSON --> serialization (we use for post,put,patch to send JSON)
+
+
+2.SEnding JSON as a MAP
+
+we store request body information into one java map, then we pass mapname .body() method, it will auto serialize if we have Jackson or Gson as a depedenceny. we dont need to do it manually using those libraries. 
+
+  //create a map to keep request json body information
+        Map<String,Object> requestJsonMap = new LinkedHashMap<>();
+        requestJsonMap.put("name","Severus");
+        requestJsonMap.put("gender","Male");
+        requestJsonMap.put("phone",8877445596L);
+3.Using POJO to send JSON Request
+
+  //create one object from your pojo, send it as a JSON
+       Spartan spartan = new Spartan();
+        spartan.setName("SeverusSpartan");
+        spartan.setGender("Male");
+        spartan.setPhone(8877445596L);
+
+so just like a map, we can store spartan information one pojo class and when we give name of the object .body() method, it will be auto serialize also. so the only thing we need to do is create object, pass needed informattion and give it to the .body method in the request part. 
+
+Scenario: we have Spartan pojo class for saving response JSON which consist of 4 fields.Can we use same class to send request body ? because we deserialize 4 field but we only need to send 3 field without id. Documentation says ID is auto generated please do not send it ! 
+
+So the solution is we need to jackson, when it comes to converting our object and sending as a JSON basically serialize ignore ID field. how to tell ?
+
+on top of your pojo class use 
+@JsonIgnoreProperties(value = "id",allowSetters = true)
+ annotation to tell only deserialize, do NOT serialize. 
+
+
+Whenever we are sending request Body as a JSON(POST,PUT,PATCH) we need to tell api 
+we that jsonBody attached and the way is content-type,application/json header
+
+if we are not getting any json body in return, we do not need to specify accept type bc the reason is we got 204, not json body. accepts tells we want json body. if there is no body why should I ask Json ? 
+
+
+
+
+
+
+
+
+
+
+
+
