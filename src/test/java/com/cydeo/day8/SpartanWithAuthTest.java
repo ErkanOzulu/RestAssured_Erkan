@@ -57,7 +57,7 @@ public class SpartanWithAuthTest extends SpartanAuthTestBase {
     /*
         As a homework,write a detealied test for Role Base Access Control(RBAC)
             in Spartan Auth app (7000)
-            Admin should be able take all CRUD
+            Admin should be able to take all CRUD
             Editor should be able to take all CRUD
                 other than DELETE
             User should be able to only READ data
@@ -69,7 +69,7 @@ public class SpartanWithAuthTest extends SpartanAuthTestBase {
    @DisplayName("HW-Role Base Access Control(RBAC)/as admin")
     @Test
     public void testRBAC1(){
-       //Admin should be able take all CRUD
+       //Admin should be able to take all CRUD
 
        //GET all spartan as admin, user expected to get 200
        given().auth()
