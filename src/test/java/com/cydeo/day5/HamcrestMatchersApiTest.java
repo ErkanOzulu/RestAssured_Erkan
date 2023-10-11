@@ -61,7 +61,7 @@ public class HamcrestMatchersApiTest {
                 .and()
                 .header("date", notNullValue())
                 .body("teachers[0].firstName", is("Tet"), "teachers[0].lastName", is("DS"))
-                .body("teachers[0].gender", equalTo("Male"));
+                .body("teachers[0].gender", equalTo("Male")).log().all();
 
     }
 
