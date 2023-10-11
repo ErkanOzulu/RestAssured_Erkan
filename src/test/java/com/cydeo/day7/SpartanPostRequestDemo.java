@@ -8,11 +8,15 @@ import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -42,7 +46,7 @@ public class SpartanPostRequestDemo extends SpartanTestBase {
 
         String requestJsonBody = "{\"gender\":\"Male\",\"name\":\"Mustafa\",\"phone\":12334523472}";
         Response response = given().accept(ContentType.JSON).and() //what we are asking from api which is JSON response
-                .contentType(ContentType.JSON) //what we are sending to api, which is JSON also
+                .contentType(ContentType.JSON)//what we are sending to api, which is JSON also
                 .body(requestJsonBody)
                 .when().post("/api/spartans");
 
@@ -57,7 +61,7 @@ public class SpartanPostRequestDemo extends SpartanTestBase {
         assertThat(response.path("data.gender"), is("Male"));
         assertThat(response.path("data.phone"), is(12334523472L));
 
-
+        response.prettyPrint();
     }
 
 
