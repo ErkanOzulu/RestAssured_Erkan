@@ -28,7 +28,7 @@ public class SpartanHamcrestTest extends SpartanTestBase {
                 .statusCode(200)
                 .and()
                 .body("totalElement", greaterThanOrEqualTo(3))
-                .extract().response().jsonPath().getList("content.name");
+                .extract().response().prettyPeek().jsonPath().getList("content.name");
 
 
         System.out.println(names);
