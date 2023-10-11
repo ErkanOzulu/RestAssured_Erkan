@@ -192,7 +192,7 @@ PART OF POST RESPONSE
 PUT VS PATCH
 they both update the result basically existing information
 the only difference between them is while we updateing even one value from json
-we need to provide rest of the fields with PUT request. but when we use PATH request we do NOT need to provide the fields that we will NOT update it. basically we can only put fields that we want to change and send patch request. for spartan both of them is returning 204 which means succesfull and no body in return.
+we need to provide rest of the fields with PUT request. but when we use PATCH request we do NOT need to provide the fields that we will NOT update it. basically we can only put fields that we want to change and send patch request. for spartan both of them is returning 204 which means succesfull and no body in return.
 
 
 DELETE 
