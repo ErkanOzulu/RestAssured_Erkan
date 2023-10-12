@@ -21,7 +21,7 @@ public class SSLTest {
     public void keyStore(){
 
         given()
-                .keyStore("pathtofile","password")
+                .keyStore("pathtofile","password") //This sets up making an HTTPS request secured with an SSL/TLS certificate using a KeyStore file in the specified file path
                 .when().get("apiurl");
 
     }
