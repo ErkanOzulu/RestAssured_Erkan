@@ -75,7 +75,7 @@ assertThat(num1+num2,equalTo(sum));
                 .statusCode(200)
                 .and()
                 .body("places.'place name'", everyItem(containsStringIgnoringCase(city)))
-                //.log().body()
+//                .log().body()
                 .extract()
                 .jsonPath().getList("places").size();
 
