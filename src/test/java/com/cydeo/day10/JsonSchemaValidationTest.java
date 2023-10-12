@@ -52,7 +52,7 @@ public class JsonSchemaValidationTest  extends SpartanAuthTestBase {
     //homework
     //put your post json schema under day10
     //post one spartan using dynamic input(name,gender,phone)
-    //verify your post response matching with json schema,,
+    //verify your post response matching with json schema,
 
 
 
