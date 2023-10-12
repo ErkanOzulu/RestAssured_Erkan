@@ -22,8 +22,10 @@ public class MockApi {
                 .then()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
-                .body("firstName",is("John"));
+                .body("firstName",is("John")).log().all();
 
+
+//     for create dammy data   https://mockaroo.com/
 
 
     }
