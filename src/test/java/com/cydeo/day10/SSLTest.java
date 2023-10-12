@@ -11,7 +11,7 @@ public class SSLTest {
     public void test1() {
 
         given().
-                relaxedHTTPSValidation(). //even if it doesnt have valid certificate I want to send request
+                relaxedHTTPSValidation(). //even if it doesn't have valid certificate I want to send request
 
                 when().get("https://untrusted-root.badssl.com/")
                 .prettyPrint();
